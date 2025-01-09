@@ -13,3 +13,5 @@ Both functions allow the user to specify the timepoints of interest `taus_`. If 
 In addition to the high level functions, the package provides a specialty bootstrapping function `misclass.boot` to resample the main study data and validation data and apply `analysis_np` or `analysis_p` functions. The `misclass.boot` function outputs `B` point estimates, where `B` is the requested number of bootstrap iterations. The standard error of the estimator may be computed as the standard deviation of these `B` estimates.
 
 Finally, the package also provides helper functions used in intermediate steps of the analysis (e.g., to compute empirical misclassification probabilities at each event time and their parametric counterparts). 
+
+This package may be installed using `dev_tools` by running `install_github("edwardsjk/heet")`
