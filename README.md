@@ -1,4 +1,6 @@
-A package to account for outcome misclassification in risk and survival functions. Full methods provided in "Risk functions with outcome misclassification", full citation to be provided upon publication.
+# `heet`: Handling error in event times
+
+`heet` is an `R` package to account for outcome misclassification in risk and survival functions. Full methods provided in "Risk functions with outcome misclassification", full citation to be provided upon publication.
 
 The current version of the package assumes the user has access to a main study dataset with an error prone event time and event indicator. This dataset may be subject to right censoring. The package also requires a validation study datasets that contains both error-prone and gold standard event times and indicators. The validation dataset may also be subject to right censoring.
 
