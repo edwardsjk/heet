@@ -174,7 +174,7 @@ p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
   tmp  <-  (obsfxn - b)/(a - b)
   tmp = ifelse(is.na(tmp) | tmp < 0 | !is.finite(tmp), obsfxn, tmp)
   risk = cummax(tmp)
-  return(data.frame(time = times, risk = risk))
+  return(data.frame(time = times, risk = cummax(risk)))
 }
 
 
@@ -211,14 +211,14 @@ analysis_np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
 ##' @export
 analysis_p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
   obsriskfxn <- est.riskfxn(obstimes, obseta)
-  params <- as.data.frame(est.mc.params(10, valw, valt, valeta, valdelta))
+  params <- as.data.frame(est.mc.params(taus_, valw, valt, valeta, valdelta))
   est_fp_rate <- ifelse(is.na(params[,1]), 0, params[,1])
   est_d_rate <- ifelse(is.na(params[,2]), 0, params[,2])
   est_theta <- params[,3]
   est_p <- p.cor(obsriskfxn$time, obsriskfxn$risk, est_fp_rate, est_d_rate, est_theta) %>%
     select(time, risk) %>%
     mutate(method = "p")
-  est_pt <- get.risk(est_p$time, est_p$risk, taus = tau)
+  est_pt <- get.risk(est_p$time, est_p$risk, taus = taus_)
   return(est_pt)
 }
 
