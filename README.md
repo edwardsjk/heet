@@ -6,7 +6,7 @@ The current version of the package assumes the user has access to a main study d
 
 The package provides 2 high level functions to account for outcome misclassification: 
 1. `analysis_np` implements a nonparametric estimator to account for outcome misclassification. In this version of the estimator, the misclassification probabilities are computed empirically at each observed event time.
-2. `analysis_p` impelements a parametric estimator to account for outcome misclassification. In this version of the estimator, parametric functions for the misclassification probabilities are computed up through each observed event time.
+2. `analysis_p` impelements a parametric estimator to account for outcome misclassification. In this version of the estimator, parametric functions for the misclassification probabilities are computed up through each timepoint of interest in a piecewise manner.
 
 Both functions allow the user to specify the timepoints of interest `taus_`. If the only timepoint of interest is the end of follow-up, `taus_` should be set to a single value corresponding to the end of follow up. If the entire risk function is of interest, `taus_` should be a vector containing each observed event time. 
 
