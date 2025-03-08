@@ -99,21 +99,20 @@ est.mc.params <- function(times, obs_times, true_times, obs_events, true_events)
   for(i in 1:length(times)){
     # redefine times, censoring at each event time
     t <-     ifelse(true_times > times[i], times[i], true_times)
-    tstar <- ifelse(obs_times > times[i], times[i], obs_times)
-    j <-     ifelse(true_times <= times[i], true_events, 0)
-    jstar <- ifelse(obs_times <= times[i], obs_events, 0)
+    w <- ifelse(obs_times > times[i], times[i], obs_times)
+    delta <-     ifelse(true_times <= times[i], true_events, 0)
+    eta <- ifelse(obs_times <= times[i], obs_events, 0)
 
     # compute parametric ests
-    fp <- ifelse((j == 0  & jstar == 1) | (tstar < t &  j == 1 & jstar == 1), 1, 0)
-    pt <- pmin(t, tstar)
+    fp <- ifelse((delta == 0  & eta == 1) | (w < t &  delta == 1 & eta == 1), 1, 0)
+    pt <- pmin(t, w)
     est_fp_rate <- sum(fp)/sum(pt)
 
-    tp <- ifelse(j == 1 & jstar == 1 & tstar > t, 1, 0)
-    pt <- sum(pmax(t, tstar) - t)
+    tp <- ifelse(delta == 1 & eta == 1 & w > t, 1, 0)
+    pt <- sum(pmax(t, w) - t)
     est_d_rate <-  ifelse(pt == 0, 0, sum(tp)/sum(pt))
 
-    #est_theta <- sum(j * jstar  * as.numeric(tstar==t))/sum(j)
-    est_theta <- sum(j * jstar  * as.numeric(tstar==t))/sum(j * as.numeric(tstar>= t))
+    est_theta <- sum(delta * eta  * as.numeric(w == t))/sum(delta * as.numeric(w >= t))
     est_theta <- ifelse(is.na(est_theta), 1, est_theta)
     ests[i,] <- c(as.numeric(est_fp_rate), as.numeric(est_d_rate), as.numeric(est_theta))
     colnames(ests) <- c("lambda_fp", "lambda_d", "theta")
@@ -137,7 +136,7 @@ np.cor <- function(times, obsfxn, afxn, bfxn){
     a_t <-  ifelse(is.na(afxn), 1, afxn)
     b_t <-  ifelse(is.na(bfxn), 0, bfxn)
     tmp <-  (obsfxn - b_t)/(a_t - b_t)
-    tmp <-  ifelse(is.na(tmp) | tmp < 0 | !is.finite(tmp), obsfxn, tmp)
+    tmp <-  ifelse(is.na(tmp) | tmp < 0 | !is.finite(tmp) | tmp > 1, obsfxn, tmp)
     risk <-  cummax(tmp)
     return(data.frame(time = times, risk = risk))
   }
@@ -173,7 +172,7 @@ p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
   z <- (1 - exp(-d_rate * (times/2))) * (1 - x) * (1 - y)
   a <- y + x + z
   tmp  <-  (obsfxn - b)/(a - b)
-  tmp = ifelse(is.na(tmp) | tmp < 0 | !is.finite(tmp), obsfxn, tmp)
+  tmp = ifelse(is.na(tmp) | tmp < 0 | !is.finite(tmp) | tmp > 1, obsfxn, tmp)
   risk = cummax(tmp)
   return(data.frame(time = times, risk = cummax(risk)))
 }
@@ -189,7 +188,7 @@ p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
 ##' @param taus_ time points of interest
 ##' @returns estimated risk at each time in `taus_`
 ##' @export
-analysis_np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
+analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
   obsriskfxn <- est.riskfxn(obstimes, obseta)
   emp_ab <- est.np.ab(obsriskfxn$time, valw, valt, valeta, valdelta)
   est_np <- np.cor(obsriskfxn$time, obsriskfxn$risk, emp_ab$a, emp_ab$b) %>%
@@ -210,7 +209,7 @@ analysis_np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
 ##' @param taus_ time points of interest
 ##' @returns estimated risk at each time in `taus_`
 ##' @export
-analysis_p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
+analysis.p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
   obsriskfxn <- est.riskfxn(obstimes, obseta)
   params <- as.data.frame(est.mc.params(taus_, valw, valt, valeta, valdelta))
   est_fp_rate <- ifelse(is.na(params[,1]), 0, params[,1])
