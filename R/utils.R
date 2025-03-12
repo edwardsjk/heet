@@ -13,6 +13,7 @@ est.riskfxn <- function(t, delta){
   r_obs <- data.frame(time = summary(obsrisk)$time,
                       risk = 1 - summary(obsrisk)$surv,
                       se = summary(obsrisk)$std.err)
+  return(r_obs)
 }
 
 
@@ -189,6 +190,13 @@ p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
 ##' @returns estimated risk at each time in `taus_`
 ##' @export
 analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
+  if(length(obstimes) != length(obseta)){
+    stop("Error: lengths of obstimes vector and obseta must be equal")
+  }
+  if(length(valw) != length(valt) | length(valw) != length(valeta) |
+     length(valeta) != length(valdelta)){
+    stop("Error: lengths of times and indicators in the validation data must be equal")
+  }
   obsriskfxn <- est.riskfxn(obstimes, obseta)
   emp_ab <- est.np.ab(obsriskfxn$time, valw, valt, valeta, valdelta)
   est_np <- np.cor(obsriskfxn$time, obsriskfxn$risk, emp_ab$a, emp_ab$b) %>%
@@ -210,6 +218,13 @@ analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
 ##' @returns estimated risk at each time in `taus_`
 ##' @export
 analysis.p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
+  if(length(obstimes) != length(obseta)){
+    stop("Error: lengths of obstimes vector and obseta must be equal")
+  }
+  if(length(valw) != length(valt) | length(valw) != length(valeta) |
+     length(valeta) != length(valdelta)){
+    stop("Error: lengths of times and indicators in the validation data must be equal")
+  }
   obsriskfxn <- est.riskfxn(obstimes, obseta)
   params <- as.data.frame(est.mc.params(taus_, valw, valt, valeta, valdelta))
   est_fp_rate <- ifelse(is.na(params[,1]), 0, params[,1])
