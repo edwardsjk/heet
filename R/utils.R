@@ -60,6 +60,7 @@ get.risk <- function(time, risk, taus, se = NULL, output_se = F){
 ##' @export
 ##'
 est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
+  require(dplyr)
   jump_times <- times #times when the curves are allowed to jump (observed event times)
   if (length(obs_times) != length(true_times)) {
     stop("Error: observed time vector should have the same number of times as true time vector")
@@ -68,8 +69,8 @@ est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
     stop("Error: observed vector of event indicators should have the same number of times as true event indicator vector")
   }
   ## empirical a(t)
-  wmat <- (outer(obs_times, jump_times, function(a, b) as.integer(b-a>=0 ))) * obs_events
-  tmat <- (outer(true_times, jump_times, function(a, b) as.integer(b-a>=0 ))) * true_events
+  wmat <- (outer(obs_times, jump_times, function(a, b) as.integer(b-a>0 | near(a, b)))) * obs_events
+  tmat <- (outer(true_times, jump_times, function(a, b) as.integer(b-a>0 | near(a, b) ))) * true_events
   at <- colSums(wmat*tmat)/colSums(tmat)
   at <- ifelse(is.na(at), 1, at)
 
