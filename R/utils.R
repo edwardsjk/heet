@@ -4,6 +4,7 @@
 ##' a function to compute the risk function
 ##' @param t a vector of times
 ##' @param delta a vector of event indicators
+##' @param ci indicator of whether the function should output 95% CI on risk function (default is F)
 ##' @returns dataframe with risk function and standard error at each observed event time
 ##' @export
 ##' @examples
@@ -11,12 +12,22 @@
 ##' 
 ##' 
 ##'
-est.riskfxn <- function(t, delta){
+est.riskfxn <- function(t, delta, ci = F){
   require(survival)
   obsrisk <- survfit(Surv(t, delta) ~ 1, data = data.frame(t = t, delta = delta))
-  r_obs <- data.frame(time = summary(obsrisk)$time,
+  if(ci == F){
+    r_obs <- data.frame(time = summary(obsrisk)$time,
                       risk = 1 - summary(obsrisk)$surv,
                       se = summary(obsrisk)$std.err)
+  }
+  
+  if(ci == T){
+    r_obs <- data.frame(time = summary(obsrisk)$time,
+                        risk = 1 - summary(obsrisk)$surv,
+                        se = summary(obsrisk)$std.err, 
+                        lcl = 1 - summary(obsrisk)$upper, 
+                        ucl = 1 - summary(obsrisk)$lower)
+  }
   return(r_obs)
 }
 
@@ -107,7 +118,7 @@ est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
 ##'
 est.mc.params <- function(times, obs_times, true_times, obs_events, true_events, suppress = F){
 
-  if(suppress == F) message("This function recomputes lambda_fp, lambda_d, and theat at each time supplied in the `times` vector")
+  if(suppress == F) message("This function recomputes lambda_fp, lambda_d, and theta at each time supplied in the `times` vector")
 
   ests <- matrix(nrow = length(times), ncol = 3)
   for(i in 1:length(times)){
@@ -255,7 +266,7 @@ analysis.p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
     stop("Error: lengths of times and indicators in the validation data must be equal")
   }
   obsriskfxn <- est.riskfxn(obstimes, obseta)
-  params <- as.data.frame(est.mc.params(max(taus_), valw, valt, valeta, valdelta))
+  params <- as.data.frame(est.mc.params(max(taus_), valw, valt, valeta, valdelta, suppress = T))
   est_fp_rate <- ifelse(is.na(params[,1]), 0, params[,1])
   est_d_rate <- ifelse(is.na(params[,2]), 0, params[,2])
   est_theta <- params[,3]

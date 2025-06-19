@@ -4,12 +4,14 @@
 \alias{est.riskfxn}
 \title{a function to compute the risk function}
 \usage{
-est.riskfxn(t, delta)
+est.riskfxn(t, delta, ci = F)
 }
 \arguments{
 \item{t}{a vector of times}
 
 \item{delta}{a vector of event indicators}
+
+\item{ci}{indicator of whether the function should output 95\% CI on risk function (default is F)}
 }
 \value{
 dataframe with risk function and standard error at each observed event time
