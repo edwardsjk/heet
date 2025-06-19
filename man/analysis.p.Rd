@@ -25,7 +25,8 @@ analysis.p(obstimes, obseta, valw, valt, valeta, valdelta, taus_)
 estimated risk at each time in \code{taus_}
 }
 \description{
-a function to perform parametric correction
+\code{analysis.p()} computes risk functions corrected for misclassification using the parametric estimator.
+This function constrains the misclassificaiton parameters lambda_fp, lambda_d, and theta to be constant over time.
 }
 \examples{
 analysis.p(dat$w, dat$eta, val$w, val$t, val$eta, val$delta, 4*365.25)

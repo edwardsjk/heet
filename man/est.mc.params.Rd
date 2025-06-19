@@ -5,7 +5,14 @@
 \title{a function to estimate fp_rate, event detection rate, and theta from validation data
 this version repeats for each observed event time to get curves correct}
 \usage{
-est.mc.params(times, obs_times, true_times, obs_events, true_events)
+est.mc.params(
+  times,
+  obs_times,
+  true_times,
+  obs_events,
+  true_events,
+  suppress = F
+)
 }
 \arguments{
 \item{times}{vector of ordered unique observed event times (if computing risk function) or tau}

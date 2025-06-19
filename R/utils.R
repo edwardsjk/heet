@@ -105,9 +105,9 @@ est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
 #' 
 ##' @export
 ##'
-est.mc.params <- function(times, obs_times, true_times, obs_events, true_events){
+est.mc.params <- function(times, obs_times, true_times, obs_events, true_events, suppress = F){
 
-  message("This function recomputes a and b at each time supplied in the `times` vector")
+  if(suppress == F) message("This function recomputes lambda_fp, lambda_d, and theat at each time supplied in the `times` vector")
 
   ests <- matrix(nrow = length(times), ncol = 3)
   for(i in 1:length(times)){
@@ -230,6 +230,10 @@ analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
 
 
 ##' a function to perform parametric correction
+##' @description
+##' `analysis.p()` computes risk functions corrected for misclassification using the parametric estimator. 
+##' This function constrains the misclassificaiton parameters lambda_fp, lambda_d, and theta to be constant over time. 
+##' 
 ##' @param obstimes observed event times in main study
 ##' @param obseta observed event indicators in main study
 ##' @param valw error-prone event times in validation study
@@ -251,7 +255,7 @@ analysis.p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
     stop("Error: lengths of times and indicators in the validation data must be equal")
   }
   obsriskfxn <- est.riskfxn(obstimes, obseta)
-  params <- as.data.frame(est.mc.params(taus_, valw, valt, valeta, valdelta))
+  params <- as.data.frame(est.mc.params(max(taus_), valw, valt, valeta, valdelta))
   est_fp_rate <- ifelse(is.na(params[,1]), 0, params[,1])
   est_d_rate <- ifelse(is.na(params[,2]), 0, params[,2])
   est_theta <- params[,3]
