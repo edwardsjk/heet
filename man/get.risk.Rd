@@ -18,3 +18,8 @@ get.risk(time, risk, taus, se = NULL, output_se = F)
 \description{
 a function to output risk at specific timepoints
 }
+\examples{
+get.risk(obsrisk$time, obsrisk$risk, taus = 4*365.25)
+
+
+}

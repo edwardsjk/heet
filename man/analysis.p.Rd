@@ -27,3 +27,7 @@ estimated risk at each time in \code{taus_}
 \description{
 a function to perform parametric correction
 }
+\examples{
+analysis.p(dat$w, dat$eta, val$w, val$t, val$eta, val$delta, 4*365.25)
+
+}

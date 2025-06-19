@@ -17,3 +17,9 @@ dataframe with risk function and standard error at each observed event time
 \description{
 a function to compute the risk function
 }
+\examples{
+est.riskfxn(times, indicators)
+
+
+
+}

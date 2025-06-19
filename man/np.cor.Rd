@@ -21,3 +21,7 @@ dataframe with times and corrected risks
 \description{
 a function to implement nonparametric correction
 }
+\examples{
+np.cor(obsrisk$time, obsrisk$risk, a, b)
+
+}

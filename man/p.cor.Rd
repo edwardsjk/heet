@@ -20,3 +20,7 @@ p.cor(times, obsfxn, fp_rate, d_rate, theta)
 \description{
 a function to implement parametric correction
 }
+\examples{
+p.cor(obsrisk$time, obsrisk$risk, est_Fp_rate, est_d_rate, est_theta)
+
+}

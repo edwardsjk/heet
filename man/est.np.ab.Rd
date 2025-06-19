@@ -23,3 +23,7 @@ a dataframe with times and values of a and b at each time
 \description{
 a function to compute a(t) and b(t) nonparametrically in validation data
 }
+\examples{
+est.np.ab(obsrisk$time, val$w, val$t, val$eta, val$delta)
+
+}

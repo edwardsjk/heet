@@ -25,3 +25,7 @@ a matrix with the estimated false positive rate, detection rate, and theta at ea
 a function to estimate fp_rate, event detection rate, and theta from validation data
 this version repeats for each observed event time to get curves correct
 }
+\examples{
+est.mc.params(obsrisk$time, val$w, val$t, val$eta, val$delta)
+
+}

@@ -6,6 +6,10 @@
 ##' @param delta a vector of event indicators
 ##' @returns dataframe with risk function and standard error at each observed event time
 ##' @export
+##' @examples
+##' est.riskfxn(times, indicators)
+##' 
+##' 
 ##'
 est.riskfxn <- function(t, delta){
   require(survival)
@@ -24,6 +28,9 @@ est.riskfxn <- function(t, delta){
 ##' @param taus a vector of timepoints of interest.
 ##' @param output_se an indicator of whether to output standard error (T/F)
 ##' @export
+##' @examples
+##' get.risk(obsrisk$time, obsrisk$risk, taus = 4*365.25)
+##' 
 ##'
 get.risk <- function(time, risk, taus, se = NULL, output_se = F){
   require(dplyr)
@@ -58,6 +65,8 @@ get.risk <- function(time, risk, taus, se = NULL, output_se = F){
 ##' @param true_events true event indicator in validation data
 ##' @returns a dataframe with times and values of a and b at each time
 ##' @export
+##' @examples
+##' est.np.ab(obsrisk$time, val$w, val$t, val$eta, val$delta)
 ##'
 est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
   require(dplyr)
@@ -91,6 +100,9 @@ est.np.ab <- function(times, obs_times, true_times, obs_events, true_events){
 #' @param obs_events obs event indicator in validation data
 #' @param true_events true event indicator in validation data
 #' @returns a matrix with the estimated false positive rate, detection rate, and theta at each time
+#' @examples
+#' est.mc.params(obsrisk$time, val$w, val$t, val$eta, val$delta)
+#' 
 ##' @export
 ##'
 est.mc.params <- function(times, obs_times, true_times, obs_events, true_events){
@@ -131,6 +143,9 @@ est.mc.params <- function(times, obs_times, true_times, obs_events, true_events)
 ##' @param bfxn a vector of values of b(t)
 ##' @returns dataframe with times and corrected risks
 ##' @export
+##' @examples
+##' np.cor(obsrisk$time, obsrisk$risk, a, b)
+##' 
 np.cor <- function(times, obsfxn, afxn, bfxn){
   ll <- list(times, obsfxn, afxn, bfxn)
   lengths <- sapply(ll, length)
@@ -154,6 +169,9 @@ np.cor <- function(times, obsfxn, afxn, bfxn){
 ##' @param fp_rate estimated false positive rate (can be a vector of the same length as time or a scalar)
 ##' @param d_rate estimated detection rate (can be a vector of the same length as time or a scalar)
 ##' @param theta estiamted probability of observing an event on time (can be a vector of the same length as time or a scalar)
+##' @examples
+##' p.cor(obsrisk$time, obsrisk$risk, est_Fp_rate, est_d_rate, est_theta)
+##' 
 ##' @export
 p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
   if(length(times) != length(obsfxn)){
@@ -189,6 +207,9 @@ p.cor <- function(times, obsfxn, fp_rate, d_rate, theta){
 ##' @param valdelta gold standard event indicators in validation study
 ##' @param taus_ time points of interest
 ##' @returns estimated risk at each time in `taus_`
+##' @examples
+##' analysis.np(dat$w, dat$eta, val$w, val$t, val$eta, val$delta, 4*365.25)
+##' 
 ##' @export
 analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
   if(length(obstimes) != length(obseta)){
@@ -217,6 +238,9 @@ analysis.np <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
 ##' @param valdelta gold standard event indicators in validation study
 ##' @param taus_ time points of interest
 ##' @returns estimated risk at each time in `taus_`
+##' @examples
+##' analysis.p(dat$w, dat$eta, val$w, val$t, val$eta, val$delta, 4*365.25)
+##' 
 ##' @export
 analysis.p <- function(obstimes, obseta, valw, valt, valeta, valdelta, taus_){
   if(length(obstimes) != length(obseta)){
